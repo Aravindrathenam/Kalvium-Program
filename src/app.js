@@ -81,22 +81,37 @@ document.addEventListener('DOMContentLoaded', () => {
   // Task 1: Fetch and display meal details in the modal
   // API:- https://www.themealdb.com/api/json/v1/1/lookup.php?i=${mealId}
   function fetchMealDetails(id) {
-   
+    fetch(`https://www.themealdb.com/api/json/v1/1/lookup.php?i=${mealId}`)
+      .then(response => response.json())
+      .then(data => {
+        const meal = data.meals[0];
+        modal.classList.remove('hidden');
+        displayIngredients(meal);
+      })
+      .catch(err => console.error(err));
   }
 
-
-  // Task 2: Display ingredients in the modal
   function displayIngredients(meal) {
-
+    ingredientsList.innerHTML = '';
+    for (let i = 1; i <= 20; i++) {
+      const ingredient = meal[`strIngredient${i}`];
+      const measure = meal[`strMeasure${i}`];
+      if (ingredient && ingredient.trim()) {
+        const li = document.createElement('li');
+        li.textContent = `${measure} ${ingredient}`;
+        ingredientsList.appendChild(li);
+      }
+    }
   }
-  
 
-  // Task 3: Hide the modal when the close button is clicked (Hint: Add a eventlistener)
+  closeModal.addEventListener('click', () => {
+    modal.classList.add('hidden');
+  });
 
-  
-  // Task 4: Clear search input and hide the meal list
   function clearSearchAndHideMeals() {
-
+    searchInput.value = '';
+    mealsContainer.innerHTML = '';
+    mealListSection.classList.add('hidden');
   }
-    
 });
+
